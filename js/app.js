@@ -64,7 +64,7 @@ function showBars(move) {
     bar.classList.add("bar");
 
     if (move && move.indices.includes(i)) {
-      bar.style.backgroundColor = move.type == "swap" ? "blue" : "green";
+      bar.style.backgroundColor = move.type == "swap" ? "#023047" : "#ffb703";
     }
     container.appendChild(bar);
   }
