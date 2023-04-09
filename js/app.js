@@ -1,4 +1,4 @@
-const n = 10;
+const n = 20;
 const array = [];
 
 init();
@@ -12,44 +12,60 @@ function init() {
 
 function play() {
   const copy = [...array];
-  const swaps = bubbleSort(copy);
-  animate(swaps);
+  const moves = bubbleSort(copy);
+  animate(moves);
 }
 
-function animate(swaps) {
-  if (swaps.length == 0) {
+function animate(moves) {
+  if (moves.length == 0) {
+    showBars();
     return;
   }
-  const [i, j] = swaps.shift();
-  [array[i], array[j]] = [array[j], array[i]];
-  showBars();
+  const move = moves.shift();
+  const [i, j] = move.indices;
+
+  if (move.type == "swap") {
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  showBars(move);
   setTimeout(function () {
-    animate(swaps);
-  }, 50);
+    animate(moves);
+  }, 200);
 }
 
 function bubbleSort(array) {
-  const swaps = [];
+  const moves = [];
   let swapped;
   do {
     swapped = false;
     for (let i = 1; i < array.length; i++) {
+      moves.push({
+        indices: [i - 1, i],
+        type: "comp",
+      });
       if (array[i - 1] > array[i]) {
         swapped = true;
-        swaps.push([i - 1, i]);
+        moves.push({
+          indices: [i - 1, i],
+          type: "swap",
+        });
         [array[i - 1], array[i]] = [array[i], array[i - 1]];
       }
     }
   } while (swapped);
-  return swaps;
+  return moves;
 }
 
-function showBars() {
+function showBars(move) {
   container.innerHTML = "";
   for (let i = 0; i < array.length; i++) {
     const bar = document.createElement("div");
-    bar.style.height = array[i] * 100 + "%";
+    bar.style.height = array[i] * 150 + "%";
     bar.classList.add("bar");
+
+    if (move && move.indices.includes(i)) {
+      bar.style.backgroundColor = move.type == "swap" ? "blue" : "green";
+    }
     container.appendChild(bar);
   }
 }
